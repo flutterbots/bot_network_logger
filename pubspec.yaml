@@ -1,0 +1,27 @@
+name: bot_network_logger
+description: A new Flutter package project.
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: '>=2.19.0 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^4.0.6
+  drift: ^2.4.2
+  sqlite3_flutter_libs: ^0.5.12
+  path_provider: ^2.0.12
+  path: ^1.8.2
+
+dev_dependencies:
+  build_runner: ^2.3.3
+  drift_dev: ^2.4.1
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+
+flutter:
