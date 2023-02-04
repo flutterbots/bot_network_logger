@@ -83,8 +83,9 @@ class RequestsDatabase extends _$RequestsDatabase {
     return into(requests).insert(request);
   }
 
-  Future<bool> updateRequest(RequestsCompanion request) {
-    return update(requests).replace(request);
+  Future<int> updateRequest(RequestsCompanion request, String guid) {
+    return (update(requests)..where((tbl) => tbl.guid.equals(guid)))
+        .write(request);
   }
 
   Future<int> deleteRequest(String uuid) {
