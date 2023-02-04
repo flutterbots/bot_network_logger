@@ -3,11 +3,34 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
+import 'package:drift_local_storage_inspector/drift_local_storage_inspector.dart';
+import 'package:storage_inspector/storage_inspector.dart';
 
 import 'db.dart';
 
 class BotNetworkLogInterceptor extends Interceptor {
-  late final RequestsDatabase _db = RequestsDatabase();
+  static final RequestsDatabase _db = requestsDatabase();
+
+  static RequestsDatabase requestsDatabase() {
+    final database = RequestsDatabase();
+    final driver = StorageServerDriver(
+      bundleId: 'supy.io.dev',
+    );
+
+    final driftDb = RequestsDatabase();
+
+    final sqlServer = DriftSQLDatabaseServer(
+      id: "1",
+      name: "SQL server",
+      database: driftDb,
+    );
+
+    driver.addSQLServer(sqlServer);
+
+    driver.start(paused: false);
+
+    return database;
+  }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -21,7 +44,7 @@ class BotNetworkLogInterceptor extends Interceptor {
   Request _request(RequestOptions options) {
     return Request(
       guid: _generateUuid(),
-      method: RequestMethod.values.asNameMap()[options.method]!,
+      method: RequestMethod.values.asNameMap()[options.method.toLowerCase()]!,
       url: options.uri.toString(),
       headers: _encodeOrToString(options.headers),
       body: options.data != null ? _encodeOrToString(options.data) : null,
@@ -40,11 +63,11 @@ class BotNetworkLogInterceptor extends Interceptor {
     if (logId != null) {
       _db.updateRequest(
         RequestsCompanion(
-          guid: Value(logId),
           status: const Value(RequestStatus.success),
           response: Value(jsonEncode(response.data)),
           statusCode: Value(response.statusCode),
         ),
+        logId,
       );
     }
     return super.onResponse(response, handler);
@@ -55,13 +78,12 @@ class BotNetworkLogInterceptor extends Interceptor {
     final logId = err.requestOptions.logId;
     if (logId != null) {
       _db.updateRequest(
-        RequestsCompanion(
-          guid: Value(logId),
-          status: const Value(RequestStatus.error),
-          error: Value(err.toString()),
-          statusCode: Value(err.response?.statusCode),
-        ),
-      );
+          RequestsCompanion(
+            status: const Value(RequestStatus.error),
+            error: Value(err.toString()),
+            statusCode: Value(err.response?.statusCode),
+          ),
+          logId);
     }
     return super.onError(err, handler);
   }
