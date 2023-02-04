@@ -6,7 +6,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_local_storage_inspector/drift_local_storage_inspector.dart';
 import 'package:storage_inspector/storage_inspector.dart';
 
-import 'db.dart';
+import 'db/db.dart';
 
 class BotNetworkLogInterceptor extends Interceptor {
   static final RequestsDatabase _db = requestsDatabase();
