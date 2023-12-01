@@ -55,7 +55,9 @@ class Requests extends Table {
 
 @DriftDatabase(tables: [Requests])
 class RequestsDatabase extends _$RequestsDatabase {
-  RequestsDatabase() : super(_openConnection());
+  RequestsDatabase._() : super(_openConnection());
+  factory RequestsDatabase() => _instance;
+  static final _instance = RequestsDatabase._();
 
   Future<int> insertRequest(Request request) {
     return transaction(

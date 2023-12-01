@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
+import 'logs_screen.dart';
+
 class BotNetworkLogOverlay extends StatefulWidget {
   const BotNetworkLogOverlay({
     super.key,
     required this.child,
     this.size = 60,
-    this.opacity = 0.6,
+    this.opacity = 1,
+    required this.context,
   });
 
+  final BuildContext context;
   final Widget child;
   final double size;
   final double opacity;
@@ -21,10 +25,11 @@ class _BotNetworkLogOverlayState extends State<BotNetworkLogOverlay> {
   double _right = 0;
 
   @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+  Widget build(BuildContext mainContext) {
+    final colorScheme = Theme.of(mainContext).colorScheme;
 
-    return MediaQuery.fromWindow(
+    return MediaQuery.fromView(
+      view: View.of(mainContext),
       child: Builder(builder: (context) {
         final queryData = MediaQuery.of(context);
         final size = queryData.size;
@@ -43,6 +48,10 @@ class _BotNetworkLogOverlayState extends State<BotNetworkLogOverlay> {
                     child: Opacity(
                       opacity: widget.opacity,
                       child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(widget.context)
+                              .pushNamed(LogsScreen.pageName);
+                        },
                         onPanUpdate: (details) {
                           setState(() {
                             _right -= details.delta.dx;
@@ -75,7 +84,7 @@ class _BotNetworkLogOverlayState extends State<BotNetworkLogOverlay> {
                           height: buttonSize,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: colorScheme.primaryContainer,
+                            color: colorScheme.secondary,
                           ),
                           child: const Icon(
                             Icons.integration_instructions_outlined,

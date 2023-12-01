@@ -9,12 +9,10 @@ import 'package:storage_inspector/storage_inspector.dart';
 import 'db/db.dart';
 
 class BotNetworkLogInterceptor extends Interceptor {
-  static final RequestsDatabase _db = requestsDatabase();
+  static final RequestsDatabase _db = _requestsDatabase();
 
-  static RequestsDatabase requestsDatabase() {
-    final driver = StorageServerDriver(
-      bundleId: 'supy.io.dev',
-    );
+  static RequestsDatabase _requestsDatabase() {
+    final driver = StorageServerDriver(bundleId: 'supy.io.dev');
 
     final driftDb = RequestsDatabase();
 
@@ -23,9 +21,7 @@ class BotNetworkLogInterceptor extends Interceptor {
       name: "SQL server",
       database: driftDb,
     );
-
     driver.addSQLServer(sqlServer);
-
     driver.start(paused: false);
 
     return driftDb;
@@ -73,7 +69,7 @@ class BotNetworkLogInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     final logId = err.requestOptions.logId;
     if (logId != null) {
       _db.updateRequest(

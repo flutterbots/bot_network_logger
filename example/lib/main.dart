@@ -3,11 +3,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   List _posts = [];
   late final Dio dio;
 
@@ -49,23 +51,20 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'API Example',
-      home: HomePage(),
+      home: const HomePage(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       builder: (context, child) {
-        return BotNetworkLogOverlay(
-          child: child!,
-        );
+        return BotNetworkLogOverlay(context: context, child: child!);
       },
     );
   }
