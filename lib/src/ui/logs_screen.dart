@@ -2,7 +2,6 @@ import 'package:bot_network_logger/src/db/db.dart';
 import 'package:flutter/material.dart';
 
 class LogsScreen extends StatefulWidget {
-  static String pageName = "logs_screen";
   const LogsScreen({super.key});
 
   @override
@@ -11,6 +10,7 @@ class LogsScreen extends StatefulWidget {
 
 class _LogsScreenState extends State<LogsScreen> {
   final RequestsDatabase _database = RequestsDatabase();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -12,7 +12,7 @@ class BotNetworkLogInterceptor extends Interceptor {
   static final RequestsDatabase _db = _requestsDatabase();
 
   static RequestsDatabase _requestsDatabase() {
-    final driver = StorageServerDriver(bundleId: 'supy.io.dev');
+    final driver = StorageServerDriver(bundleId: 'com.example.example');
 
     final driftDb = RequestsDatabase();
 
