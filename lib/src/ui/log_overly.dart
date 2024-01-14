@@ -34,6 +34,7 @@ class _BotNetworkLogOverlayState extends State<BotNetworkLogOverlay> {
         final buttonSize = widget.size;
 
         return Navigator(
+          onPopPage: (_, __) => true,
           pages: [
             MaterialPage(
               child: Directionality(

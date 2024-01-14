@@ -62,6 +62,8 @@ class MyApp extends StatelessWidget {
       title: 'API Example',
       home: const HomePage(),
       theme: ThemeData(
+        colorScheme: const ColorScheme.light(
+            brightness: Brightness.light, primary: Colors.deepPurple),
         primarySwatch: Colors.blue,
       ),
       builder: (_, child) {

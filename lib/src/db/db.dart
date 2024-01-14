@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -20,6 +22,22 @@ enum RequestStatus {
   pending,
   success,
   error,
+}
+
+extension RequestStatusFunctions on RequestStatus {
+  material.Color get getStatusColor {
+    switch (this) {
+      case RequestStatus.success:
+        return material.Colors.green;
+      case RequestStatus.error:
+        return material.Colors.red;
+      case RequestStatus.pending:
+        return material.Colors.amber;
+
+      default:
+        return material.Colors.black12;
+    }
+  }
 }
 
 class Requests extends Table {
@@ -106,8 +124,40 @@ class RequestsDatabase extends _$RequestsDatabase {
         .get();
   }
 
-  Stream<List<Request>> requestStream() {
-    return select(requests).watch();
+  Stream<List<Request>> requestStream(
+      {RequestStatus? status, RequestMethod? method, String? keyword}) {
+    var statement = select(requests);
+
+    statement = (statement
+      ..where((tbl) {
+        List<Expression<bool>> expression = [];
+        if (status != null) {
+          expression.add(tbl.status.equals(status.index));
+        }
+        if (method != null) {
+          expression.add(tbl.method.equals(method.index));
+        }
+        if (keyword != null && keyword.isNotEmpty) {
+          int? code = int.tryParse(keyword);
+          var keywordExpression = tbl.url.contains(keyword) |
+              tbl.body.contains(keyword) |
+              tbl.headers.contains(keyword) |
+              tbl.response.contains(keyword) |
+              tbl.error.contains(keyword) |
+              tbl.extra.contains(keyword);
+          if (code != null) {
+            keywordExpression = tbl.statusCode.equals(code) | keywordExpression;
+          }
+          expression.add(keywordExpression);
+        }
+
+        return Expression.and(expression);
+      }));
+    statement = statement
+      ..orderBy([
+        (t) => OrderingTerm.desc(t.createdAt),
+      ]);
+    return statement.watch();
   }
 
   @override
