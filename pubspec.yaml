@@ -15,7 +15,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.18
   path_provider: ^2.1.1
   path: ^1.8.3
-  storage_inspector: ^0.4.0
+#  storage_inspector: ^0.4.0
   drift_local_storage_inspector: ^0.7.0
   intl: ^0.18.1
   reactive_forms: ^16.1.1
